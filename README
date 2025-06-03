@@ -1,29 +1,22 @@
-# Golang Demo
+# Golang Task CLI
 
-This is a minimal setup to build and run a Go application using Docker and locally with the Go toolchain.
-
----
-
-## 🐋 Docker Commands
-
-### Build the Docker image
-```bash
-docker build -t golang-demo .
-```
-
-### Run the Docker container
-```bash
-docker run -it --rm golang-demo
-```
+This is a minimal setup to build and run a Go application locally with the Go toolchain.
 
 ---
 
 ## 🔧 Local Go Commands
 
+### Build the Application
 ```bash
-go build main.go
+go build
 ```
 
+### Run the Application
 ```bash
-go build main.go
+go run .
+```
+
+### Format the Code
+```bash
+gofmt -w .
 ```
