@@ -12,20 +12,21 @@ const filePath = "tasks.json"
 func main() {
 	fmt.Println("Welcome to Golang Task CLI!")
 
+	// Arguments parsing and validation
 	validArgs, err := t.ValidateArgs(os.Args)
 	if err != nil {
 		log.Fatalf("Error parsing arguments: %v", err)
 	}
-
 	t.PrintArgs(validArgs)
 
+	// Repository and service initialization
 	taskRepository, err := t.NewRepository(filePath)
 	if err != nil {
 		log.Fatalf("Error initializing task repository: %v", err)
 	}
-
 	taskService := t.NewService(taskRepository)
 
+	// Execute the action based on the parsed arguments
 	switch validArgs.Action {
 	case t.ActionList:
 		taskService.PrintTasks(validArgs.Status)

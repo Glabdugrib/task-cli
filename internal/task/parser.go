@@ -12,6 +12,7 @@ type ParsedArgs struct {
 	Status      *Status
 }
 
+// Converts the receive arguments into a valid ParsedArgs struct
 func ValidateArgs(args []string) (ParsedArgs, error) {
 	if len(args) < 2 {
 		return ParsedArgs{}, fmt.Errorf("you must provide at least one command")
@@ -84,6 +85,7 @@ func ValidateArgs(args []string) (ParsedArgs, error) {
 	return parsed, nil
 }
 
+// Prints the parsed arguments in a user-friendly format
 func PrintArgs(args ParsedArgs) {
 	fmt.Println("\nCHOSEN ACTION:")
 	fmt.Printf("Action: %s\n", args.Action)
