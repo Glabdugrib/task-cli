@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 )
 
 type TaskRepository struct {
@@ -54,8 +55,8 @@ func (r *TaskRepository) Update(updatedTask Task) error {
 func (r *TaskRepository) Delete(id uint) error {
 	for i, t := range r.tasks {
 		if t.ID == id {
-			r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
-			return nil
+			r.tasks = slices.Delete(r.tasks, i, i+1)
+			return r.save()
 		}
 	}
 	return fmt.Errorf("task not found")
