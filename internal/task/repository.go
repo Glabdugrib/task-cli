@@ -21,8 +21,18 @@ func NewRepository(path string) (*TaskRepository, error) {
 	return repo, nil
 }
 
-func (r *TaskRepository) List() []Task {
-	return r.tasks
+func (r *TaskRepository) List(status *Status) []Task {
+	if status == nil {
+		return r.tasks
+	}
+
+	var filtered []Task
+	for _, task := range r.tasks {
+		if task.Status == *status {
+			filtered = append(filtered, task)
+		}
+	}
+	return filtered
 }
 
 func (r *TaskRepository) Add(task Task) error {

@@ -28,7 +28,7 @@ func main() {
 
 	switch validArgs.Action {
 	case t.ActionList:
-		taskService.PrintTasks()
+		taskService.PrintTasks(validArgs.Status)
 	case t.ActionAdd:
 		err := taskService.CreateTask(validArgs.Description)
 		if err != nil {

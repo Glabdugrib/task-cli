@@ -14,7 +14,7 @@ func NewService(repo *TaskRepository) *TaskService {
 }
 
 func (s *TaskService) GetTasks() []Task {
-	return s.repo.List()
+	return s.repo.List(nil)
 }
 
 func (s *TaskService) CreateTask(description string) error {
@@ -34,7 +34,7 @@ func (s *TaskService) CreateTask(description string) error {
 }
 
 func (s *TaskService) UpdateTaskDescription(id uint, description string) error {
-	tasks := s.repo.List()
+	tasks := s.repo.List(nil)
 	for _, t := range tasks {
 		if t.ID == id {
 			t.Description = description
@@ -45,7 +45,7 @@ func (s *TaskService) UpdateTaskDescription(id uint, description string) error {
 }
 
 func (s *TaskService) UpdateTaskStatus(id uint, status Status) error {
-	tasks := s.repo.List()
+	tasks := s.repo.List(nil)
 	for _, t := range tasks {
 		if t.ID == id {
 			t.Status = status
@@ -59,8 +59,8 @@ func (s *TaskService) DeleteTask(id uint) error {
 	return s.repo.Delete(id)
 }
 
-func (s *TaskService) PrintTasks() {
-	tasks := s.repo.List()
+func (s *TaskService) PrintTasks(status *Status) {
+	tasks := s.repo.List(status)
 
 	for _, t := range tasks {
 		fmt.Printf("\nTASK %v\n", t.ID)
