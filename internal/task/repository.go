@@ -1,0 +1,82 @@
+package task
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"os"
+)
+
+type TaskRepository struct {
+	tasks     []Task
+	storePath string
+}
+
+// Creates a new task repository that persists to a JSON file
+func NewRepository(path string) (*TaskRepository, error) {
+	repo := &TaskRepository{storePath: path}
+	if err := repo.load(); err != nil {
+		return nil, err
+	}
+	return repo, nil
+}
+
+func (r *TaskRepository) List() []Task {
+	return r.tasks
+}
+
+func (r *TaskRepository) Add(task Task) error {
+	task.ID = r.nextID()
+	r.tasks = append(r.tasks, task)
+	return r.save()
+}
+
+func (r *TaskRepository) Update(updatedTask Task) error {
+	for i, t := range r.tasks {
+		if t.ID == updatedTask.ID {
+			r.tasks[i] = updatedTask
+			return r.save()
+		}
+	}
+	return fmt.Errorf("task not found")
+}
+
+func (r *TaskRepository) Delete(id uint) error {
+	for i, t := range r.tasks {
+		if t.ID == id {
+			r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("task not found")
+}
+
+func (r *TaskRepository) nextID() uint {
+	maxID := uint(0)
+	for _, t := range r.tasks {
+		if t.ID > maxID {
+			maxID = t.ID
+		}
+	}
+	return maxID + 1
+}
+
+func (r *TaskRepository) save() error {
+	data, err := json.MarshalIndent(r.tasks, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(r.storePath, data, 0644)
+}
+
+func (r *TaskRepository) load() error {
+	if _, err := os.Stat(r.storePath); errors.Is(err, os.ErrNotExist) {
+		// Create empty file if it doesn't exist
+		return os.WriteFile(r.storePath, []byte("[]"), 0644)
+	}
+	data, err := os.ReadFile(r.storePath)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, &r.tasks)
+}

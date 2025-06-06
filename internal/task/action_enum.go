@@ -1,4 +1,4 @@
-package main
+package task
 
 import (
 	"fmt"
@@ -42,17 +42,3 @@ func ParseAction(input string) (Action, error) {
 	}
 	return a, nil
 }
-
-// func (a Action) MarshalJSON() ([]byte, error) {
-// 	return fmt.Appendf(nil, `"%s"`, a.String()), nil
-// }
-
-// func (a *Action) UnmarshalJSON(data []byte) error {
-// 	str := strings.Trim(string(data), `"`)
-// 	parsed, err := ParseAction(str)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	*a = parsed
-// 	return nil
-// }

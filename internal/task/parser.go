@@ -1,48 +1,9 @@
-package main
+package task
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"strconv"
 )
-
-func main() {
-	fmt.Println("Welcome to Golang Task CLI!")
-
-	parsed, err := validateArgs(os.Args)
-	if err != nil {
-		log.Fatalf("Argument validation error: %v", err)
-	}
-
-	var tasks Tasks
-
-	err = tasks.get()
-	if err != nil {
-		fmt.Printf("Failed to load tasks: %v\n", err)
-	}
-
-	switch parsed.Action {
-	case ActionList:
-		tasks.print()
-	case ActionAdd:
-		tasks.add(parsed.Description)
-		tasks.save()
-		tasks.print()
-	case ActionUpdate:
-		tasks.update(parsed.ID, parsed.Description)
-		tasks.save()
-		tasks.print()
-	case ActionDelete:
-		tasks.delete(parsed.ID)
-		tasks.save()
-		tasks.print()
-	case ActionMark:
-		tasks.mark(parsed.ID, parsed.Status)
-		tasks.save()
-		tasks.print()
-	}
-}
 
 type ParsedArgs struct {
 	Action      Action
@@ -51,7 +12,7 @@ type ParsedArgs struct {
 	Status      Status
 }
 
-func validateArgs(args []string) (ParsedArgs, error) {
+func ValidateArgs(args []string) (ParsedArgs, error) {
 	if len(args) < 2 {
 		return ParsedArgs{}, fmt.Errorf("you must provide at least one command")
 	}
@@ -60,7 +21,7 @@ func validateArgs(args []string) (ParsedArgs, error) {
 	if err != nil {
 		return ParsedArgs{}, fmt.Errorf(`you must provide a valid action ("add", "update", "delete", "list", "mark"), "%s" provided`, args[1])
 	}
-	fmt.Println("Action:", action)
+	fmt.Println("\nRequested action:", action)
 
 	parsed := ParsedArgs{Action: action}
 
