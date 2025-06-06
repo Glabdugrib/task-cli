@@ -17,6 +17,8 @@ func main() {
 		log.Fatalf("Error parsing arguments: %v", err)
 	}
 
+	t.PrintArgs(validArgs)
+
 	taskRepository, err := t.NewRepository(filePath)
 	if err != nil {
 		log.Fatalf("Error initializing task repository: %v", err)

@@ -9,7 +9,7 @@ type ParsedArgs struct {
 	Action      Action
 	ID          uint
 	Description string
-	Status      Status
+	Status      *Status
 }
 
 func ValidateArgs(args []string) (ParsedArgs, error) {
@@ -21,7 +21,6 @@ func ValidateArgs(args []string) (ParsedArgs, error) {
 	if err != nil {
 		return ParsedArgs{}, fmt.Errorf(`you must provide a valid action ("add", "update", "delete", "list", "mark"), "%s" provided`, args[1])
 	}
-	fmt.Println("\nRequested action:", action)
 
 	parsed := ParsedArgs{Action: action}
 
@@ -67,14 +66,34 @@ func ValidateArgs(args []string) (ParsedArgs, error) {
 		if err != nil {
 			return ParsedArgs{}, fmt.Errorf(`you must provide a valid status ("pending", "in_progress", "done"), "%s" provided`, args[3])
 		}
-		parsed.Status = status
+		parsed.Status = &status
 
 	case ActionList:
-		// no args required
+		if len(args) > 2 {
+			status, err := ParseStatus(args[2])
+			if err != nil {
+				return ParsedArgs{}, fmt.Errorf(`you must provide a valid status ("pending", "in_progress", "done"), "%s" provided`, args[2])
+			}
+			parsed.Status = &status
+		}
 
 	default:
 		return parsed, fmt.Errorf("unsupported action: %s", action)
 	}
 
 	return parsed, nil
+}
+
+func PrintArgs(args ParsedArgs) {
+	fmt.Println("\nCHOSEN ACTION:")
+	fmt.Printf("Action: %s\n", args.Action)
+	if args.ID != 0 {
+		fmt.Printf("ID: %d\n", args.ID)
+	}
+	if args.Description != "" {
+		fmt.Printf("Description: %s\n", args.Description)
+	}
+	if args.Status != nil {
+		fmt.Printf("Status: %s\n", args.Status.String())
+	}
 }
