@@ -33,7 +33,14 @@ func (s *TaskService) CreateTask(description string) error {
 		UpdatedAt:   currentTime,
 	}
 
-	return s.repo.Add(task)
+	err := s.repo.Add(task)
+	if err != nil {
+		return err
+	}
+
+	// Only reached if no error
+	fmt.Println("\nTask created successfully")
+	return nil
 }
 
 // Updates the description of an existing task by ID
@@ -42,7 +49,13 @@ func (s *TaskService) UpdateTaskDescription(id uint, description string) error {
 	for _, t := range tasks {
 		if t.ID == id {
 			t.Description = description
-			return s.repo.Update(t)
+			err := s.repo.Update(t)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println("\nTask updated successfully")
+			return nil
 		}
 	}
 	return fmt.Errorf("task not found")
@@ -54,7 +67,13 @@ func (s *TaskService) UpdateTaskStatus(id uint, status Status) error {
 	for _, t := range tasks {
 		if t.ID == id {
 			t.Status = status
-			return s.repo.Update(t)
+			err := s.repo.Update(t)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println("\nTask updated successfully")
+			return nil
 		}
 	}
 	return fmt.Errorf("task not found")
@@ -62,15 +81,27 @@ func (s *TaskService) UpdateTaskStatus(id uint, status Status) error {
 
 // Deletes a task by ID
 func (s *TaskService) DeleteTask(id uint) error {
-	return s.repo.Delete(id)
+	err := s.repo.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("\nTask deleted successfully")
+	return nil
 }
 
 // Prints the details of all tasks, optionally filtered by status
 func (s *TaskService) PrintTasks(status *Status) {
+	fmt.Println("\nTASKS LIST:")
 	tasks := s.repo.List(status)
 
+	if len(tasks) == 0 {
+		fmt.Println("\nNo tasks found.")
+		return
+	}
+
 	for _, t := range tasks {
-		fmt.Printf("\nTASK %v\n", t.ID)
+		fmt.Printf("\nID %v\n", t.ID)
 		fmt.Printf("Description: %s\n", t.Description)
 		fmt.Printf("Status: %s\n", t.Status.String())
 		fmt.Printf("Created at: %s\n", t.CreatedAt)
